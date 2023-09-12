@@ -1,0 +1,42 @@
+.ReactToggleCheckbox {
+  height: 0;
+  width: 0;
+  visibility: hidden;
+  position: absolute;
+}
+
+.ReactToggleLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  cursor: pointer;
+  width: 100px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 100px;
+  position: relative;
+  transition: background-color .2s;
+  font-size: 24px;
+  user-select: none;
+}
+
+.ReactToggleLabel .ReactToggleButton {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc(57% - 2px);
+  height: 100%;
+  border-radius: 45px;
+  transition: 0.2s;
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.ReactToggleCheckbox:checked + .ReactToggleLabel .ReactToggleButton {
+  left: calc(100% - 2px);
+  transform: translateX(-100%);
+}
+
+.ReactToggleLabel:active .ReactToggleButton {
+  width: 60px;
+}
