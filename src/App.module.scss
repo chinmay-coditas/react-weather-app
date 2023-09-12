@@ -1,6 +1,6 @@
 .MainContainer {
-  width: 100vw;
-  height: 100vh;
+  min-width: 100vw;
+  min-height: 100vh;
   display: flex;
   background: linear-gradient(-249deg, #f0b5ce 0%, #8c6bae 100%);
 }
