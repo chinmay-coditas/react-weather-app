@@ -1,6 +1,8 @@
 import styles from "./App.module.scss";
 import weatherIcon from "./assets/weather-icon.svg";
+import IndexInfo from "./components/IndexInfo/IndexInfo";
 import SearchWidget from "./components/SearchWidget/SearchWidget";
+import SunriseSunsetInfo from "./components/SunriseSunsetInfo/SunriseSunsetInfo";
 import TemperatureInfo from "./components/TemperatureInfo/TemperatureInfo";
 import TemperatureUnitToggle from "./components/TemperatureUnitToggle/TemperatureUnitToggle";
 import WeatherInfo from "./components/WeatherInfo/WeatherInfo";
@@ -53,7 +55,25 @@ const App = () => {
       </div>
 
       <div className={styles.RightSection}>
-        {/* <SearchWidget /> */}
+        <SearchWidget />
+
+        <div className={styles.SunriseSunsetInfoContainer}>
+          <SunriseSunsetInfo size="Small" label="Sunrise" />
+          <SunriseSunsetInfo size="Large" label="Golden Hour" />
+          <SunriseSunsetInfo size="Small" label="Sunset" />
+        </div>
+
+        <div className={styles.InfoIconSection}>
+          <div className={styles.DividerLine}></div>
+          <button className={styles.InfoButton}>
+            <span className={styles.ButtonLabel}>i</span>
+          </button>
+        </div>
+
+        <div className={styles.IndexInfoContainer}>
+          <IndexInfo label="Air Quality" indexValue="2" maxValue="5" />
+          <IndexInfo label="UV Index" indexValue="6" maxValue="10" />
+        </div>
       </div>
     </div>
   );

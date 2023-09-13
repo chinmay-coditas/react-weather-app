@@ -9,15 +9,13 @@ import searchButtonIcon from "../../assets/search-button-icon.svg";
 
 const SearchWidget = () => {
   return (
-    <>
-      <div className={styles.SearchWidgetHost}>
-        <img className={styles.Icon} src={locationPinIcon} alt="" />
+    <div className={styles.SearchWidgetHost}>
+      <img className={styles.LocationPinIcon} src={locationPinIcon} alt="" />
 
-        <div className={styles.LocationLabel}>Delhi, India</div>
+      <div className={styles.LocationLabel}>Delhi, India</div>
 
-        <img className={styles.Icon} src={searchButtonIcon} alt="" />
-      </div>
-    </>
+      <img className={styles.SearchButtonIcon} src={searchButtonIcon} alt="" />
+    </div>
   );
 };
 

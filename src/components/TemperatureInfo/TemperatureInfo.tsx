@@ -8,18 +8,16 @@ interface ITemperatureInfo {
 
 const TemperatureInfo = ({ temperature, dayLabel }: ITemperatureInfo) => {
   return (
-    <>
-      <div className={styles.TemperatureInfoHost}>
-        <div className={styles.TemperatureLabel}>
-          {temperature}
-          <div className={styles.Unit}> ° C</div>
-        </div>
-
-        <img className={styles.Icon} src={cloudIcon} alt="" />
-
-        <div className={styles.DayLabel}>{dayLabel}</div>
+    <div className={styles.TemperatureInfoHost}>
+      <div className={styles.TemperatureLabel}>
+        {temperature}
+        <div className={styles.Unit}> ° C</div>
       </div>
-    </>
+
+      <img className={styles.Icon} src={cloudIcon} alt="" />
+
+      <div className={styles.DayLabel}>{dayLabel}</div>
+    </div>
   );
 };
 

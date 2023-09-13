@@ -10,31 +10,29 @@ interface IWeatherInfo {
 
 const WeatherInfo = ({ detailType, info }: IWeatherInfo) => {
   return (
-    <>
-      <div className={styles.WeatherInfoHost}>
-        {detailType === "Wind" ? (
-          <img className={styles.Icon} src={windDirectionIcon} alt="" />
-        ) : detailType === "Humidity" ? (
-          <img className={styles.Icon} src={humidityIcon} alt="" />
-        ) : detailType === "Rain" ? (
-          <img className={styles.Icon} src={rainIcon} alt="" />
-        ) : null}
+    <div className={styles.WeatherInfoHost}>
+      {detailType === "Wind" ? (
+        <img className={styles.Icon} src={windDirectionIcon} alt="" />
+      ) : detailType === "Humidity" ? (
+        <img className={styles.Icon} src={humidityIcon} alt="" />
+      ) : detailType === "Rain" ? (
+        <img className={styles.Icon} src={rainIcon} alt="" />
+      ) : null}
 
-        <div className={styles.Label}>
-          {detailType === "Wind"
-            ? "Wind"
-            : detailType === "Humidity"
-            ? "Humidity"
-            : detailType === "Rain"
-            ? "Rain"
-            : ""}
-        </div>
-        <div className={styles.Info}>
-          {detailType === "Wind" ? convertWindSpeed(info) : info}
-          <span>{detailType === "Wind" ? " km/h" : " %"}</span>
-        </div>
+      <div className={styles.Label}>
+        {detailType === "Wind"
+          ? "Wind"
+          : detailType === "Humidity"
+          ? "Humidity"
+          : detailType === "Rain"
+          ? "Rain"
+          : ""}
       </div>
-    </>
+      <div className={styles.Info}>
+        {detailType === "Wind" ? convertWindSpeed(info) : info}
+        <span>{detailType === "Wind" ? " km/h" : " %"}</span>
+      </div>
+    </div>
   );
 
   function convertWindSpeed(info: string) {
