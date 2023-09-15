@@ -11,6 +11,16 @@ const IndexInfo = ({ label, indexValue, maxValue }: IIndexInfo) => {
   const style: React.CSSProperties = {
     "--index": parseInt(indexValue) * (190 / parseInt(maxValue)) - 100 + "deg",
   } as React.CSSProperties;
+
+  let indexLevel = ["Good", "Fair", "Moderate", "Poor", "Very Poor"][
+    parseInt(indexValue) - 1
+  ];
+  
+  //TODO: refactor when UV Index API is available
+  if (parseInt(indexValue) > 5) {
+    indexLevel = "High";
+  }
+
   return (
     <div className={styles.IndexInfoHost}>
       <div className={styles.Label}>{label}</div>
@@ -23,7 +33,7 @@ const IndexInfo = ({ label, indexValue, maxValue }: IIndexInfo) => {
           <div className={styles.IndexNumber}>
             {indexValue}/{maxValue}
           </div>
-          <div className={styles.IndexLevel}>Moderate</div>
+          <div className={styles.IndexLevel}>{indexLevel}</div>
         </div>
       </div>
     </div>

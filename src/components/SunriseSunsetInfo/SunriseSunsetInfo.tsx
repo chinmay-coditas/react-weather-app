@@ -4,9 +4,16 @@ import clockHandsIcon from "../../assets/clock-hands-icon.svg";
 interface ISunriseSunsetInfo {
   size: string;
   label: string;
+  startTime: string;
+  endTime?: string;
 }
 
-const SunriseSunsetInfo = ({ size, label }: ISunriseSunsetInfo) => {
+const SunriseSunsetInfo = ({
+  size,
+  label,
+  startTime,
+  endTime = "6:45",
+}: ISunriseSunsetInfo) => {
   return (
     <div
       className={[
@@ -19,8 +26,10 @@ const SunriseSunsetInfo = ({ size, label }: ISunriseSunsetInfo) => {
       <div className={styles.TimeInfoContainer}>
         <img className={styles.ClockHandsIcon} src={clockHandsIcon} alt="" />
 
-        <div className={styles.StartTime}>11:24</div>
-        <div className={styles.EndTime}>11:45</div>
+        <div className={styles.StartTime}>{startTime}</div>
+        <div className={styles.EndTime}>
+          {label === "Golden Hour" ? endTime + " pm" : endTime}
+        </div>
       </div>
     </div>
   );

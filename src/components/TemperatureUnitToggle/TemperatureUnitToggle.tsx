@@ -7,6 +7,7 @@ const TemperatureUnitToggle = () => {
         className={styles.ReactToggleCheckbox}
         id={`ReactToggleNew`}
         type="checkbox"
+        defaultChecked
       />
       <label className={styles.ReactToggleLabel} htmlFor={`ReactToggleNew`}>
         <span>F</span>

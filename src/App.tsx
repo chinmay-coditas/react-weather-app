@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import styles from "./App.module.scss";
 import weatherIcon from "./assets/weather-icon.svg";
 import IndexInfo from "./components/IndexInfo/IndexInfo";
@@ -6,10 +7,64 @@ import SunriseSunsetInfo from "./components/SunriseSunsetInfo/SunriseSunsetInfo"
 import TemperatureInfo from "./components/TemperatureInfo/TemperatureInfo";
 import TemperatureUnitToggle from "./components/TemperatureUnitToggle/TemperatureUnitToggle";
 import WeatherInfo from "./components/WeatherInfo/WeatherInfo";
+import { geoCurrentLocation } from "./services/geolocation.service";
+import {
+  getAirPollutionData,
+  getOpenWeatherData,
+} from "./services/openweather.service";
 
 const App = () => {
+  const [weatherData, setWeatherData] = useState([] as any);
+  const [airPollutionData, setAirPollutionData] = useState([] as any);
+  const [sunData, setSunData] = useState([] as any);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const getLocationData = async () => {
+    const currentLocationData = await geoCurrentLocation();
+
+    const weatherData = await getOpenWeatherData(
+      (currentLocationData as any).latitude,
+      (currentLocationData as any).longitude
+    );
+    setWeatherData(weatherData);
+    console.log(weatherData);
+
+    const airPollutionData = await getAirPollutionData(
+      (currentLocationData as any).latitude,
+      (currentLocationData as any).longitude
+    );
+    setAirPollutionData(airPollutionData);
+    console.log(airPollutionData);
+
+    setIsLoading(false);
+
+    function formatTime12Hour(date: Date): string {
+      const hours = date.getHours() % 12 || 12; // Convert 0 to 12 for 12-hour format
+      const minutes = date.getMinutes().toString().padStart(2, "0");
+      // const ampm = date.getHours() >= 12 ? "pm" : "am";
+      return `${hours}:${minutes}`;
+    }
+
+    setSunData({
+      sunrise: formatTime12Hour(new Date(weatherData?.sys?.sunrise * 1000)),
+      sunset: formatTime12Hour(new Date(weatherData?.sys?.sunset * 1000)),
+    });
+
+    console.log(sunData);
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    getLocationData();
+  }, []);
+
   return (
     <div className={styles.MainContainer}>
+      {isLoading ? (
+        <div className={styles.LoaderContainer}>
+          <div className={styles.Loader}></div>
+        </div>
+      ) : null}
       <div className={styles.LeftSection}>
         <div className={styles.WeatherTemperatureWrapper}>
           <div className={styles.TemperatureToggleWrapper}>
@@ -17,7 +72,7 @@ const App = () => {
               <img className={styles.WeatherIcon} src={weatherIcon} alt="" />
 
               <div className={styles.Temperature}>
-                27
+                {Math.round(weatherData?.main?.temp * 10) / 10}
                 <div className={styles.Unit}>° C</div>
               </div>
             </div>
@@ -31,16 +86,22 @@ const App = () => {
             <div className={styles.Date}>{getCurrentDate()}</div>
 
             <div className={styles.DayTimeWrapper}>
-              <div className={styles.Day}>{getTodaysDay()}</div>
+              <div className={styles.Day}>{getCurrentDay()}</div>
               <span className={styles.DividerLine}></span>
               <div className={styles.Time}>{getCurrentTime()}</div>
             </div>
           </div>
 
           <div className={styles.WeatherInfoContainer}>
-            <WeatherInfo detailType="Wind" info="4.2" />
-            <WeatherInfo detailType="Humidity" info="54" />
-            <WeatherInfo detailType="Rain" info="0.2" />
+            <WeatherInfo detailType="Wind" info={weatherData?.wind?.speed} />
+            <WeatherInfo
+              detailType="Humidity"
+              info={weatherData?.main?.humidity}
+            />
+            <WeatherInfo
+              detailType="Rain"
+              info={weatherData?.rain ? weatherData?.rain!["1h"] : "0"}
+            />
           </div>
 
           <div className={styles.TemperatureInfoContainer}>
@@ -55,12 +116,24 @@ const App = () => {
       </div>
 
       <div className={styles.RightSection}>
-        <SearchWidget />
+        <SearchWidget currentLocation={weatherData.name} />
 
         <div className={styles.SunriseSunsetInfoContainer}>
-          <SunriseSunsetInfo size="Small" label="Sunrise" />
-          <SunriseSunsetInfo size="Large" label="Golden Hour" />
-          <SunriseSunsetInfo size="Small" label="Sunset" />
+          <SunriseSunsetInfo
+            size="Small"
+            label="Sunrise"
+            startTime={sunData.sunrise}
+          />
+          <SunriseSunsetInfo
+            size="Large"
+            label="Golden Hour"
+            startTime={`6:00 am`}
+          />
+          <SunriseSunsetInfo
+            size="Small"
+            label="Sunset"
+            startTime={sunData.sunset}
+          />
         </div>
 
         <div className={styles.InfoIconSection}>
@@ -71,14 +144,22 @@ const App = () => {
         </div>
 
         <div className={styles.IndexInfoContainer}>
-          <IndexInfo label="Air Quality" indexValue="2" maxValue="5" />
+          <IndexInfo
+            label="Air Quality"
+            indexValue={
+              airPollutionData?.list
+                ? airPollutionData?.list[0]?.main?.aqi
+                : null
+            }
+            maxValue="5"
+          />
           <IndexInfo label="UV Index" indexValue="6" maxValue="10" />
         </div>
       </div>
     </div>
   );
 
-  function getTodaysDay() {
+  function getCurrentDay() {
     return [
       "Sunday",
       "Monday",
