@@ -11,49 +11,84 @@ import { geoCurrentLocation } from "./services/geolocation.service";
 import {
   getAirPollutionData,
   getOpenWeatherData,
+  getOpenWeatherDataByCityName,
 } from "./services/openweather.service";
 
 const App = () => {
   const [weatherData, setWeatherData] = useState([] as any);
+  const [cityName, setCityName] = useState(null);
   const [currentTemperature, setCurrentTemperature] = useState(0 as any);
   const [airPollutionData, setAirPollutionData] = useState([] as any);
-  const [sunData, setSunData] = useState([] as any);
+  const [sunData, setSunData] = useState({
+    sunrise: "--:--",
+    sunset: "--:--",
+  } as any);
   const [isLoading, setIsLoading] = useState(false);
   const [isCelsius, setIsCelsius] = useState(true);
+  const [showSearchInput, setShowSearchInput] = useState(false);
 
   const getLocationData = async () => {
-    const currentLocationData = await geoCurrentLocation();
+    if (cityName) {
+      getOpenWeatherInfoByCityName(cityName);
+    } else {
+      const currentLocationData = await geoCurrentLocation();
 
-    const weatherData = await getOpenWeatherData(
-      (currentLocationData as any).latitude,
-      (currentLocationData as any).longitude
-    );
-    setWeatherData(weatherData);
-    setCurrentTemperature(weatherData?.main?.temp);
-    console.log(weatherData);
-
-    const airPollutionData = await getAirPollutionData(
-      (currentLocationData as any).latitude,
-      (currentLocationData as any).longitude
-    );
-    setAirPollutionData(airPollutionData);
-    console.log(airPollutionData);
-
-    setIsLoading(false);
-
-    function formatTime12Hour(date: Date): string {
-      const hours = date.getHours() % 12 || 12; // Convert 0 to 12 for 12-hour format
-      const minutes = date.getMinutes().toString().padStart(2, "0");
-      // const ampm = date.getHours() >= 12 ? "pm" : "am";
-      return `${hours}:${minutes}`;
+      const weatherData = await getOpenWeatherData(
+        (currentLocationData as any).latitude,
+        (currentLocationData as any).longitude
+      );
+      setWeatherData(weatherData);
+      updateSunInfo(weatherData?.sys);
+      setCityName(weatherData?.name);
+      setCurrentTemperature(weatherData?.main?.temp);
+      getAirPollutionInfo(currentLocationData);
     }
 
-    setSunData({
-      sunrise: formatTime12Hour(new Date(weatherData?.sys?.sunrise * 1000)),
-      sunset: formatTime12Hour(new Date(weatherData?.sys?.sunset * 1000)),
-    });
+    setIsLoading(false);
+  };
 
-    console.log(sunData);
+  const updateSunInfo = (sunInfo: { sunrise: number; sunset: number }) => {
+    setSunData({
+      sunrise: formatTime12Hour(new Date(sunInfo?.sunrise * 1000)),
+      sunset: formatTime12Hour(new Date(sunInfo?.sunset * 1000)),
+    });
+  };
+
+  const formatTime12Hour = (date: Date) => {
+    const hours = date.getHours() % 12 || 12; // Convert 0 to 12 for 12-hour format
+    const minutes = date.getMinutes().toString().padStart(2, "0");
+    // const ampm = date.getHours() >= 12 ? "pm" : "am";
+    return `${hours}:${minutes}`;
+  };
+
+  const getOpenWeatherInfoByCityName = async (event: any) => {
+    const weatherData = await getOpenWeatherDataByCityName(event.target.value);
+    setWeatherData(weatherData);
+    updateSunInfo(weatherData?.sys);
+    setCurrentTemperature(weatherData?.main?.temp);
+    const newCoords = {
+      latitude: weatherData?.coord?.lat,
+      longitude: weatherData?.coord?.lon,
+    };
+    getAirPollutionInfo(newCoords);
+    setShowSearchInput(false);
+    setIsLoading(false);
+  };
+
+  const getAirPollutionInfo = async (currentLocationData: any) => {
+    const airPollutionData = await getAirPollutionData(
+      currentLocationData.latitude,
+      currentLocationData.longitude
+    );
+    setAirPollutionData(airPollutionData);
+  };
+
+  const updateWeatherInfo = async (event: any) => {
+    if (event.key === "Enter") {
+      setIsLoading(true);
+      setCityName(event.target.value);
+      getOpenWeatherInfoByCityName(event);
+    }
   };
 
   useEffect(() => {
@@ -106,10 +141,15 @@ const App = () => {
           </div>
 
           <div className={styles.WeatherInfoContainer}>
-            <WeatherInfo detailType="Wind" info={weatherData?.wind?.speed} />
+            <WeatherInfo
+              detailType="Wind"
+              info={weatherData?.wind?.speed ? weatherData?.wind?.speed : "0"}
+            />
             <WeatherInfo
               detailType="Humidity"
-              info={weatherData?.main?.humidity}
+              info={
+                weatherData?.main?.humidity ? weatherData?.main?.humidity : "0"
+              }
             />
             <WeatherInfo
               detailType="Rain"
@@ -129,7 +169,14 @@ const App = () => {
       </div>
 
       <div className={styles.RightSection}>
-        <SearchWidget currentLocation={weatherData.name} />
+        <SearchWidget
+          currentLocation={cityName!}
+          showSearchInput={showSearchInput}
+          handleSearchButtonIconClick={() =>
+            setShowSearchInput(!showSearchInput)
+          }
+          handleSearchInput={updateWeatherInfo}
+        />
 
         <div className={styles.SunriseSunsetInfoContainer}>
           <SunriseSunsetInfo
