@@ -108,6 +108,11 @@
     .Nextarrow {
       align-self: center;
       cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:active {
+        transform: scale(0.9);
+      }
     }
 }
 
