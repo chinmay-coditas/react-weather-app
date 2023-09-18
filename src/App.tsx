@@ -15,9 +15,11 @@ import {
 
 const App = () => {
   const [weatherData, setWeatherData] = useState([] as any);
+  const [currentTemperature, setCurrentTemperature] = useState(0 as any);
   const [airPollutionData, setAirPollutionData] = useState([] as any);
   const [sunData, setSunData] = useState([] as any);
   const [isLoading, setIsLoading] = useState(false);
+  const [isCelsius, setIsCelsius] = useState(true);
 
   const getLocationData = async () => {
     const currentLocationData = await geoCurrentLocation();
@@ -27,6 +29,7 @@ const App = () => {
       (currentLocationData as any).longitude
     );
     setWeatherData(weatherData);
+    setCurrentTemperature(weatherData?.main?.temp);
     console.log(weatherData);
 
     const airPollutionData = await getAirPollutionData(
@@ -72,13 +75,21 @@ const App = () => {
               <img className={styles.WeatherIcon} src={weatherIcon} alt="" />
 
               <div className={styles.Temperature}>
-                {Math.round(weatherData?.main?.temp * 10) / 10}
+                {Math.round(currentTemperature * 10) / 10}
                 <div className={styles.Unit}>° C</div>
               </div>
             </div>
 
             <div className={styles.TemperatureUnitToggleContainer}>
-              <TemperatureUnitToggle />
+              <TemperatureUnitToggle
+                isCelsius={isCelsius}
+                handleToggle={() => {
+                  isCelsius
+                    ? setCurrentTemperature((currentTemperature * 1.8) + 32)
+                    : setCurrentTemperature((currentTemperature - 32) / 1.8);
+                  setIsCelsius(!isCelsius);
+                }}
+              />
             </div>
           </div>
 

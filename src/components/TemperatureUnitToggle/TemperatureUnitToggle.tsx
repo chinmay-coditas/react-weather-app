@@ -1,13 +1,22 @@
 import styles from "./TemperatureUnitToggle.module.scss";
 
-const TemperatureUnitToggle = () => {
+interface ITemperatureUnitToggle {
+  isCelsius: boolean;
+  handleToggle: () => void;
+}
+
+const TemperatureUnitToggle = ({
+  isCelsius,
+  handleToggle,
+}: ITemperatureUnitToggle) => {
   return (
     <>
       <input
         className={styles.ReactToggleCheckbox}
         id={`ReactToggleNew`}
         type="checkbox"
-        defaultChecked
+        checked={isCelsius}
+        onChange={handleToggle}
       />
       <label className={styles.ReactToggleLabel} htmlFor={`ReactToggleNew`}>
         <span>F</span>
