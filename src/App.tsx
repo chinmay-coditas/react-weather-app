@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./App.module.scss";
 import weatherIcon from "./assets/weather-icon.svg";
+import rightArrowIcon from "./assets/right-arrow.svg";
 import IndexInfo from "./components/IndexInfo/IndexInfo";
 import SearchWidget from "./components/SearchWidget/SearchWidget";
 import SunriseSunsetInfo from "./components/SunriseSunsetInfo/SunriseSunsetInfo";
@@ -162,6 +163,10 @@ const App = () => {
             <TemperatureInfo temperature="24" dayLabel="Sat" />
             <TemperatureInfo temperature="24" dayLabel="Sun" />
             <TemperatureInfo temperature="24" dayLabel="Mon" />
+
+            <div className={styles.Nextarrow}>
+              <img src={rightArrowIcon} alt="" />
+            </div>
           </div>
         </div>
 
