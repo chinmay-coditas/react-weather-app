@@ -74,10 +74,12 @@ const App = () => {
             <div className={styles.TemperatureContainer}>
               <img className={styles.WeatherIcon} src={weatherIcon} alt="" />
 
-              <div className={styles.Temperature}>
-                {Math.round(currentTemperature * 10) / 10}
-                <div className={styles.Unit}>° C</div>
-              </div>
+              {currentTemperature > 0 ? (
+                <div className={styles.Temperature}>
+                  {Math.round(currentTemperature * 10) / 10}
+                  <div className={styles.Unit}>° {isCelsius ? "C" : "F"}</div>
+                </div>
+              ) : null}
             </div>
 
             <div className={styles.TemperatureUnitToggleContainer}>
@@ -85,8 +87,8 @@ const App = () => {
                 isCelsius={isCelsius}
                 handleToggle={() => {
                   isCelsius
-                    ? setCurrentTemperature((currentTemperature * 1.8) + 32)
-                    : setCurrentTemperature((currentTemperature - 32) / 1.8);
+                    ? setCurrentTemperature(weatherData?.main?.temp * 1.8 + 32)
+                    : setCurrentTemperature(weatherData?.main?.temp);
                   setIsCelsius(!isCelsius);
                 }}
               />
