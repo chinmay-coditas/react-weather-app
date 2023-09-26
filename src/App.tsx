@@ -16,17 +16,18 @@ import {
 } from "./services/openweather.service";
 
 const App = () => {
-  const [weatherData, setWeatherData] = useState([] as any);
+  const [weatherData, setWeatherData] = useState<any>([]);
   const [cityName, setCityName] = useState(null);
-  const [currentTemperature, setCurrentTemperature] = useState(0 as any);
-  const [airPollutionData, setAirPollutionData] = useState([] as any);
-  const [sunData, setSunData] = useState({
+  const [currentTemperature, setCurrentTemperature] = useState(0);
+  const [airPollutionData, setAirPollutionData] = useState<any>([]);
+  const [sunData, setSunData] = useState<any>({
     sunrise: "--:--",
     sunset: "--:--",
-  } as any);
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [isCelsius, setIsCelsius] = useState(true);
   const [showSearchInput, setShowSearchInput] = useState(false);
+  const currentDate = new Date();
 
   const getLocationData = async () => {
     if (cityName) {
@@ -38,14 +39,18 @@ const App = () => {
         (currentLocationData as any).latitude,
         (currentLocationData as any).longitude
       );
-      setWeatherData(weatherData);
-      updateSunInfo(weatherData?.sys);
-      setCityName(weatherData?.name);
-      setCurrentTemperature(weatherData?.main?.temp);
-      getAirPollutionInfo(currentLocationData);
+      updateAppState(weatherData, currentLocationData);
     }
 
     setIsLoading(false);
+  };
+
+  const updateAppState = (weatherData: any, currentLocationData: any) => {
+    setWeatherData(weatherData);
+    updateSunInfo(weatherData?.sys);
+    setCityName(weatherData?.name);
+    setCurrentTemperature(weatherData?.main?.temp);
+    getAirPollutionInfo(currentLocationData);
   };
 
   const updateSunInfo = (sunInfo: { sunrise: number; sunset: number }) => {
@@ -62,16 +67,13 @@ const App = () => {
     return `${hours}:${minutes}`;
   };
 
-  const getOpenWeatherInfoByCityName = async (event: any) => {
-    const weatherData = await getOpenWeatherDataByCityName(event.target.value);
-    setWeatherData(weatherData);
-    updateSunInfo(weatherData?.sys);
-    setCurrentTemperature(weatherData?.main?.temp);
+  const getOpenWeatherInfoByCityName = async (cityName: string) => {
+    const weatherData = await getOpenWeatherDataByCityName(cityName);
     const newCoords = {
       latitude: weatherData?.coord?.lat,
       longitude: weatherData?.coord?.lon,
     };
-    getAirPollutionInfo(newCoords);
+    updateAppState(weatherData, newCoords);
     setShowSearchInput(false);
     setIsLoading(false);
   };
@@ -88,7 +90,7 @@ const App = () => {
     if (event.key === "Enter") {
       setIsLoading(true);
       setCityName(event.target.value);
-      getOpenWeatherInfoByCityName(event);
+      getOpenWeatherInfoByCityName(event.target.value);
     }
   };
 
@@ -108,7 +110,11 @@ const App = () => {
         <div className={styles.WeatherTemperatureWrapper}>
           <div className={styles.TemperatureToggleWrapper}>
             <div className={styles.TemperatureContainer}>
-              <img className={styles.WeatherIcon} src={weatherIcon} alt="" />
+              <img
+                className={styles.WeatherIcon}
+                src={weatherIcon}
+                alt="Weather Icon"
+              />
 
               {currentTemperature > 0 ? (
                 <div className={styles.Temperature}>
@@ -132,12 +138,12 @@ const App = () => {
           </div>
 
           <div className={styles.DateTimeWrapper}>
-            <div className={styles.Date}>{getCurrentDate()}</div>
+            <div className={styles.Date}>{getCurrentDate(currentDate)}</div>
 
             <div className={styles.DayTimeWrapper}>
-              <div className={styles.Day}>{getCurrentDay()}</div>
+              <div className={styles.Day}>{getCurrentDay(currentDate)}</div>
               <span className={styles.DividerLine}></span>
-              <div className={styles.Time}>{getCurrentTime()}</div>
+              <div className={styles.Time}>{getCurrentTime(currentDate)}</div>
             </div>
           </div>
 
@@ -165,7 +171,7 @@ const App = () => {
             <TemperatureInfo temperature="24" dayLabel="Mon" />
 
             <div className={styles.Nextarrow}>
-              <img src={rightArrowIcon} alt="" />
+              <img src={rightArrowIcon} alt="Right Arrow Icon" />
             </div>
           </div>
         </div>
@@ -224,7 +230,7 @@ const App = () => {
     </div>
   );
 
-  function getCurrentDay() {
+  function getCurrentDay(date: Date) {
     return [
       "Sunday",
       "Monday",
@@ -233,13 +239,11 @@ const App = () => {
       "Thursday",
       "Friday",
       "Saturday",
-    ][new Date().getDay()];
+    ][date.getDay()];
   }
 
-  function getCurrentTime() {
-    let now = new Date();
-
-    let time = now.toLocaleString("en-US", {
+  function getCurrentTime(date: Date) {
+    let time = date.toLocaleString("en-US", {
       hour: "numeric",
       minute: "numeric",
       hour12: true,
@@ -248,9 +252,7 @@ const App = () => {
     return time;
   }
 
-  function getCurrentDate() {
-    let date = new Date();
-
+  function getCurrentDate(date: Date) {
     let day = date.getDate();
 
     let suffix = "";

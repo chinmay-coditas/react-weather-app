@@ -27,7 +27,7 @@ const IndexInfo = ({ label, indexValue, maxValue }: IIndexInfo) => {
       <div className={styles.container}>
         <span className={styles.IndexMarker} style={style}></span>
         <div className={styles.MeterImage}>
-          <img className={styles.Icon} src={indexMeterImage} alt="" />
+          <img className={styles.Icon} src={indexMeterImage} alt="Index Meter Image" />
         </div>
         <div className={styles.MeterInfoWrapper}>
           <div className={styles.IndexNumber}>

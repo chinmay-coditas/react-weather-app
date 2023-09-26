@@ -30,7 +30,7 @@ const SearchWidget = ({
           <img
             className={styles.SearchButtonIcon}
             src={searchIcon}
-            alt=""
+            alt="Search Icon"
             onClick={handleSearchButtonIconClick}
           />
         </div>
@@ -39,13 +39,13 @@ const SearchWidget = ({
           <img
             className={styles.LocationPinIcon}
             src={locationPinIcon}
-            alt=""
+            alt="Location Pin Icon"
           />
           <div className={styles.LocationLabel}>{currentLocation}</div>
           <img
             className={styles.SearchButtonIcon}
             src={searchButtonIcon}
-            alt=""
+            alt="Search Button Icon"
             onClick={handleSearchButtonIconClick}
           />
         </div>

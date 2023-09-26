@@ -24,7 +24,7 @@ const SunriseSunsetInfo = ({
       <div className={styles.TimeLabel}>{label}</div>
 
       <div className={styles.TimeInfoContainer}>
-        <img className={styles.ClockHandsIcon} src={clockHandsIcon} alt="" />
+        <img className={styles.ClockHandsIcon} src={clockHandsIcon} alt="Clock Hands Icon" />
 
         <div className={styles.StartTime}>{startTime}</div>
         <div className={styles.EndTime}>

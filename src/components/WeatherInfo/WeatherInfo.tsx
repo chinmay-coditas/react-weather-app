@@ -12,11 +12,11 @@ const WeatherInfo = ({ detailType, info }: IWeatherInfo) => {
   return (
     <div className={styles.WeatherInfoHost}>
       {detailType === "Wind" ? (
-        <img className={styles.Icon} src={windDirectionIcon} alt="" />
+        <img className={styles.Icon} src={windDirectionIcon} alt="Wind Direction Icon" />
       ) : detailType === "Humidity" ? (
-        <img className={styles.Icon} src={humidityIcon} alt="" />
+        <img className={styles.Icon} src={humidityIcon} alt="Humidity Icon" />
       ) : detailType === "Rain" ? (
-        <img className={styles.Icon} src={rainIcon} alt="" />
+        <img className={styles.Icon} src={rainIcon} alt="Rain Icon" />
       ) : null}
 
       <div className={styles.Label}>

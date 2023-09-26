@@ -14,7 +14,7 @@ const TemperatureInfo = ({ temperature, dayLabel }: ITemperatureInfo) => {
         <div className={styles.Unit}> ° C</div>
       </div>
 
-      <img className={styles.Icon} src={cloudIcon} alt="" />
+      <img className={styles.Icon} src={cloudIcon} alt="Cloud Icon" />
 
       <div className={styles.DayLabel}>{dayLabel}</div>
     </div>
